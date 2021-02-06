@@ -66,6 +66,24 @@ func (Topic) TableName() string {
 }
 ```
 
+- `Message`
+``` go
+// Message 消息
+// 目前只有举报消息
+type Message struct {
+	ID          uint
+	Sender	    string
+	Content     string
+	Time	    time
+	Dirty	    bool		// 是否已读
+}
+
+// TableName 指定Message对应的数据表的名字
+func (Message) TableName() string {
+	return "Message"
+}
+```
+
 # API设计
 
 - 用户注册
@@ -158,10 +176,6 @@ func (Topic) TableName() string {
 
 `localhost:8000/room/audios/:roomid GET`
 
-- 举报某个用户
-
-`localhost:8000/score/:username PATCH`
-
 - 获取某个用户在某个房间发送的新音频
 
 `localhost:8000/room/audios POST`
@@ -169,6 +183,19 @@ func (Topic) TableName() string {
 |---|---|
 |username | string|
 |roomid | uint|
+
+- 举报某个用户
+
+`localhost:8000/report POST`
+|参数| 类型 |
+|---|---|
+|username | string|			 // 举报的用户账户名
+|reason | string|		 	 // 举报原因，供举报系统使用
+|time | time|
+
+- 扣除用户信用分
+
+`localhost:8000/score/:username PATCH`		 // 一次扣10分
 
 # 特殊功能
 将用户自定义话题存储起来，对话题库中评分低的（用户每次选择就给话题加1分）予以替换。
