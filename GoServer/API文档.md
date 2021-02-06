@@ -57,7 +57,8 @@ func (Room) TableName() string {
 type Topic struct {
 	ID          uint
 	Content     string
-  Score       uint      // 对话题进行评分，分数低的进行剔除
+  	Score       uint      // 对话题进行评分，分数低的进行剔除
+	Activate    bool      // 是否激活，用户自定义话题进入话题库，处于未激活状态，仅用于当次的聊天
 }
 
 // TableName 指定Topic对应的数据表的名字
