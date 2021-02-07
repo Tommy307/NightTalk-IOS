@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "UserPlaneView.h"
 #import "MatchViewController.h"
+#import "TopicBankTableViewController.h"
 #import "UserInfoEditView.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
@@ -34,6 +35,8 @@
 @property uint roomID;
 
 @property MatchViewController *matchViewController;
+
+@property Boolean topicIsChosed;
 
 @end 
 

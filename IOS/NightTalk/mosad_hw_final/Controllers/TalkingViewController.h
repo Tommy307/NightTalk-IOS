@@ -63,6 +63,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, retain) NSMutableArray * userArray;
 @property (nonatomic, retain) NSMutableArray * voiceArray;
 
+@property (nonatomic, retain) NSMutableArray * voiceOfcomplaintArray;
+
 @end
 
 NS_ASSUME_NONNULL_END

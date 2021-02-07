@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1502F6E6746AE1508F8AF834 /* libPods-NightTalk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3158F0745A0B57431814320C /* libPods-NightTalk.a */; };
+		9660264F25CFE92000988877 /* tongzhi.png in Resources */ = {isa = PBXBuildFile; fileRef = 9660264E25CFE92000988877 /* tongzhi.png */; };
 		966BCE53258C53FE005BDD79 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 966BCE52258C53FE005BDD79 /* AppDelegate.m */; };
 		966BCE5B258C53FF005BDD79 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 966BCE5A258C53FF005BDD79 /* Assets.xcassets */; };
 		966BCE5E258C53FF005BDD79 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 966BCE5C258C53FF005BDD79 /* LaunchScreen.storyboard */; };
@@ -18,6 +19,7 @@
 		966D91D42590F87E00E71D31 /* tip.png in Resources */ = {isa = PBXBuildFile; fileRef = 966D91D32590F87E00E71D31 /* tip.png */; };
 		966D91DA2591C6F700E71D31 /* defaultImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 966D91D92591C6F700E71D31 /* defaultImage.png */; };
 		966D921D2591EE5B00E71D31 /* liaotian1.png in Resources */ = {isa = PBXBuildFile; fileRef = 966D921C2591EE5B00E71D31 /* liaotian1.png */; };
+		966E3F6D25CE89D20001EB1E /* TopicBankTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 966E3F6C25CE89D20001EB1E /* TopicBankTableViewController.m */; };
 		966E4F76258CC30E0050F9BF /* icon167.png in Resources */ = {isa = PBXBuildFile; fileRef = 966E4F67258CC30E0050F9BF /* icon167.png */; };
 		966E4F77258CC30E0050F9BF /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 966E4F68258CC30E0050F9BF /* icon.png */; };
 		966E4F78258CC30E0050F9BF /* icon29.png in Resources */ = {isa = PBXBuildFile; fileRef = 966E4F69258CC30E0050F9BF /* icon29.png */; };
@@ -101,6 +103,7 @@
 		2B91C2188FBE945C92676A46 /* Pods-mosad_hw_final.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mosad_hw_final.debug.xcconfig"; path = "Target Support Files/Pods-mosad_hw_final/Pods-mosad_hw_final.debug.xcconfig"; sourceTree = "<group>"; };
 		3158F0745A0B57431814320C /* libPods-NightTalk.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NightTalk.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DB44BB996127EAB6B16217A /* Pods-mosad_hw_final.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mosad_hw_final.release.xcconfig"; path = "Target Support Files/Pods-mosad_hw_final/Pods-mosad_hw_final.release.xcconfig"; sourceTree = "<group>"; };
+		9660264E25CFE92000988877 /* tongzhi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tongzhi.png; path = image/tongzhi.png; sourceTree = SOURCE_ROOT; };
 		966BCE4E258C53FE005BDD79 /* NightTalk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NightTalk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		966BCE51258C53FE005BDD79 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		966BCE52258C53FE005BDD79 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -119,6 +122,8 @@
 		966D91D32590F87E00E71D31 /* tip.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tip.png; sourceTree = "<group>"; };
 		966D91D92591C6F700E71D31 /* defaultImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = defaultImage.png; sourceTree = "<group>"; };
 		966D921C2591EE5B00E71D31 /* liaotian1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = liaotian1.png; sourceTree = "<group>"; };
+		966E3F6B25CE89D20001EB1E /* TopicBankTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TopicBankTableViewController.h; sourceTree = "<group>"; };
+		966E3F6C25CE89D20001EB1E /* TopicBankTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TopicBankTableViewController.m; sourceTree = "<group>"; };
 		966E4F67258CC30E0050F9BF /* icon167.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon167.png; sourceTree = "<group>"; };
 		966E4F68258CC30E0050F9BF /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		966E4F69258CC30E0050F9BF /* icon29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon29.png; sourceTree = "<group>"; };
@@ -362,6 +367,7 @@
 				96869C2A259308F700930182 /* record-icon */,
 				968A0C3825905910005990E0 /* sprite */,
 				969F97A4258FA3AC00940AD5 /* liaotianbackground.jpg */,
+				9660264E25CFE92000988877 /* tongzhi.png */,
 				966D91D92591C6F700E71D31 /* defaultImage.png */,
 				FDE9AFEE2595DDCF00056598 /* huatong.png */,
 				96869C8125934C6800930182 /* tupian.png */,
@@ -415,6 +421,8 @@
 				966E4F86258CCC240050F9BF /* TalkingViewController.m */,
 				96869C832593BCBB00930182 /* MyUIImageView.h */,
 				96869C842593BCBB00930182 /* MyUIImageView.m */,
+				966E3F6B25CE89D20001EB1E /* TopicBankTableViewController.h */,
+				966E3F6C25CE89D20001EB1E /* TopicBankTableViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -556,6 +564,7 @@
 				FD057960259700B5004EE534 /* xiugaixinxi.png in Resources */,
 				966E4F84258CC30E0050F9BF /* icon180.png in Resources */,
 				FD0579642597018E004EE534 /* tuichudenglu.png in Resources */,
+				9660264F25CFE92000988877 /* tongzhi.png in Resources */,
 				96869C40259308F700930182 /* error.png in Resources */,
 				967A1CF32590A583005F0FC0 /* pipei.png in Resources */,
 				96869C38259308F700930182 /* record7.png in Resources */,
@@ -641,6 +650,7 @@
 				967A1CFA2590AC73005F0FC0 /* HYBClockView.m in Sources */,
 				FD7FA02A25A3260800F414A6 /* AboutView.m in Sources */,
 				967A1CFB2590AC73005F0FC0 /* HYBAnimationClock.m in Sources */,
+				966E3F6D25CE89D20001EB1E /* TopicBankTableViewController.m in Sources */,
 				FD031CE325A2CEF400455F72 /* PasswordEditView.m in Sources */,
 				966BCE61258C53FF005BDD79 /* main.m in Sources */,
 				FDE9AFF72595E26D00056598 /* UserPlaneView.m in Sources */,

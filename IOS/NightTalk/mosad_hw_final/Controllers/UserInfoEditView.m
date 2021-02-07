@@ -202,5 +202,12 @@
     self.maskView = pickVC.view;
 }
 
+//点击空白处收回键盘
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    [_textFieldA resignFirstResponder];
+    [_textFieldB resignFirstResponder];
+    [_textFieldC resignFirstResponder];
+    [_usernameInput resignFirstResponder];
+}
 
 @end

@@ -146,8 +146,9 @@
     self.tableView.tableFooterView = [UIView new];
     self.tableView.allowsSelection = YES;
     self.tableView.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:0.97];
+    self.tableView.bounces = NO;
     
-    self.dataList = [[NSMutableArray alloc] initWithArray: @[@"修改信息",@"修改密码",@"关于软件",@" ",@"退出登录"]];
+    self.dataList = [[NSMutableArray alloc] initWithArray: @[@"通知",@" ",@"修改信息",@"修改密码",@"关于软件",@" ",@"退出登录"]];
     
     self.planeTitle = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, 120)];
     self.planeTitle.text = @"个人主页";
@@ -512,14 +513,14 @@
     }];
 }
 
-#pragma mark UITableViewDataSource
+#pragma mark - UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // NSLog(@"%ld",self.dataList.count);
     return self.dataList.count; // 增加的1为加载更多
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    if(indexPath.row == 3){
+    if(indexPath.row == 1 || indexPath.row == 5){
         return 10;
     }
     return 60;
@@ -534,12 +535,14 @@
         // 添加 icon 与 文字
         NSTextAttachment *textAttach = [[NSTextAttachment alloc]init];
         if(indexPath.row == 0){
-            cell.imageView.image = [UIImage imageNamed:@"xiugaixinxi.png"];
-        } else if(indexPath.row == 1){
-            cell.imageView.image = [UIImage imageNamed:@"xiugaimima.png"];
+            cell.imageView.image = [UIImage imageNamed:@"tongzhi.png"];
         } else if(indexPath.row == 2){
-            cell.imageView.image = [UIImage imageNamed:@"icon29.png"];
+            cell.imageView.image = [UIImage imageNamed:@"xiugaixinxi.png"];
+        } else if(indexPath.row == 3){
+            cell.imageView.image = [UIImage imageNamed:@"xiugaimima.png"];
         } else if(indexPath.row == 4){
+            cell.imageView.image = [UIImage imageNamed:@"icon29.png"];
+        } else if(indexPath.row == 6){
             cell.imageView.image = [UIImage imageNamed:@"tuichudenglu.png"];
         }
         textAttach.bounds = CGRectMake(5, -2, 30, 16);
@@ -555,7 +558,7 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         cell.backgroundColor = [UIColor whiteColor];
-        if(indexPath.row == 3){
+        if(indexPath.row == 1 || indexPath.row == 5){
             cell.accessoryType = UITableViewCellAccessoryNone;
             cell.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:0.97];
         }
@@ -597,5 +600,12 @@
     }
 }
 
+//点击空白处收回键盘
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    [_textFieldA resignFirstResponder];
+    [_textFieldB resignFirstResponder];
+    [_textFieldC resignFirstResponder];
+    [_usernameInput resignFirstResponder];
+}
 
 @end
