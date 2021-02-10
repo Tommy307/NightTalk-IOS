@@ -11,6 +11,7 @@
 #import "MatchViewController.h"
 #import "TopicBankTableViewController.h"
 #import "UserInfoEditView.h"
+#import "NotificationViewController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -22,6 +23,7 @@
 // zl
 @property UIView *userPlane;
 @property UIView *editInfo;
+@property UINavigationController * navigationController;
 
 @property uint userId;
 @property NSString *userName;
@@ -37,6 +39,8 @@
 @property MatchViewController *matchViewController;
 
 @property Boolean topicIsChosed;
+
+@property Boolean notificationIsOpen;
 
 @end 
 

@@ -34,6 +34,7 @@
 //    self.score = (uint)100;
     
     self.topicIsChosed = NO;
+    self.notificationIsOpen = NO;
     
     self.roomID = (uint)19;
     

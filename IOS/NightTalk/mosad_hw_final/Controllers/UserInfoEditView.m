@@ -196,9 +196,12 @@
     pickVC.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     pickVC.delegate = myDelegate.matchViewController;
     pickVC.allowsEditing = YES;
-    
+    pickVC.modalPresentationStyle = UIModalPresentationFullScreen;
+    pickVC.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
     // 上传图片。显示控制器
     [myDelegate.matchViewController presentViewController:pickVC animated:YES completion:^{}];
+    
+//    [myDelegate.matchViewController.navigationController pushViewController:pickVC.viewControllers.firstObject animated:YES];
     self.maskView = pickVC.view;
 }
 
@@ -208,6 +211,15 @@
     [_textFieldB resignFirstResponder];
     [_textFieldC resignFirstResponder];
     [_usernameInput resignFirstResponder];
+}
+
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey,id> *)info {
+    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    self.avatar.image = image;
+}
+
+-(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    NSLog(@"aaaa");
 }
 
 @end

@@ -575,22 +575,43 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if(indexPath.row == 0){
+        NSLog(@"查看通知");
+//        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:notificationViewController];
+        UIWindow *window =  [[[UIApplication sharedApplication] windows] objectAtIndex:0];
+        UINavigationController *nav = (UINavigationController *)window.rootViewController;
+        MatchViewController * matchViewController = nav.viewControllers[0];
+        NotificationViewController * notificationViewController = [[NotificationViewController alloc] init];
+        self.nav1 = [[UINavigationController alloc] initWithRootViewController:notificationViewController];
+        self.nav1.modalPresentationStyle = UIModalPresentationCustom;
+//        nav1.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+        [matchViewController presentViewController:_nav1 animated:NO completion:^{
+            NSLog(@"前往通知页面");
+            self.nav1.view.backgroundColor = [UIColor clearColor];
+            self.nav1.view.superview.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+//            nav1.view.superview.center = CGPointMake(200,374);
+            notificationViewController.userPlaneView = self;
+            self.alpha = 0;
+            AppDelegate *myDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+            myDelegate.navigationController = self.nav1;
+            myDelegate.notificationIsOpen = YES;
+        }];
+    } else if(indexPath.row == 2){
         // 修改信息
         NSLog(@"修改信息");
         AppDelegate *myDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
         myDelegate.editInfo = [[UserInfoEditView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height)];
         [self addSubview:myDelegate.editInfo];
-    } else if(indexPath.row == 1){
+    } else if(indexPath.row == 3){
         // 修改密码
         NSLog(@"修改密码");
         UIView *editPass = [[PasswordEditView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height)];
         [self addSubview:editPass];
-    } else if(indexPath.row == 2){
+    } else if(indexPath.row == 4){
         // 关于软件
         NSLog(@"关于软件");
         UIView *aboutSoft = [[AboutView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height)];
         [self addSubview:aboutSoft];
-    } else if(indexPath.row == 4){
+    } else if(indexPath.row == 6){
         // 退出登录
         NSLog(@"退出登录");
         AppDelegate *myDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];

@@ -177,7 +177,7 @@
 
      UIView *headerView = [[UIView alloc] init];
 
-     headerView.backgroundColor = [UIColor groupTableViewBackgroundColor];
+     headerView.backgroundColor = [UIColor systemGroupedBackgroundColor];
      
      _textField = [[UITextField alloc] initWithFrame:CGRectMake(10, 9, self.view.frame.size.width-20, 50)];
      _textField.layer.borderWidth = 1;
@@ -222,7 +222,7 @@
 
     UIView *headerView = [[UIView alloc] init];
 
-    headerView.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    headerView.backgroundColor = [UIColor systemGroupedBackgroundColor];
     
      UILabel *label = [[UILabel alloc]init];
      label.textColor = [UIColor grayColor];

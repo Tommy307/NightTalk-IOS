@@ -248,6 +248,7 @@
     
     AppDelegate *myDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     myDelegate.userPlane = [[UserPlaneView alloc] initWithFrame:CGRectMake(-(self.view.frame.size.width-40), 0, self.view.frame.size.width-40, self.view.frame.size.height)];
+    
 //    myDelegate.userPlane = [[UserPlaneView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width-40, self.view.frame.size.height)];
     [self.view addSubview:myDelegate.userPlane];
     
@@ -261,9 +262,20 @@
 -(void)pressDenglu{
 //    NSLog(@"here");
     AppDelegate *myDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    [UIView animateWithDuration:0.3 animations:^{
-        [myDelegate.userPlane setFrame:CGRectMake(0, 0, self.view.frame.size.width-40, self.view.frame.size.height)];
-    }];
+    if(!myDelegate.notificationIsOpen) {
+        [UIView animateWithDuration:0.3 animations:^{
+            [myDelegate.userPlane setFrame:CGRectMake(0, 0, self.view.frame.size.width-40, self.view.frame.size.height)];
+        }];
+    } else {
+//        NSLog(@"!!!!");
+        [self presentViewController:myDelegate.navigationController animated:NO completion:^{
+            NSLog(@"跳转到通知");
+            [myDelegate.navigationController.view.superview setFrame:CGRectMake(-(self.view.frame.size.width-40), 0, self.view.frame.size.width-40, self.view.bounds.size.height)];
+            [UIView animateWithDuration:0.3 animations:^{
+                [myDelegate.navigationController.view.superview setFrame:CGRectMake(0, 0, self.view.bounds.size.width-40, self.view.bounds.size.height)];
+            }];
+        }];
+    }
 }
 
 -(void)addDelayAnimate1

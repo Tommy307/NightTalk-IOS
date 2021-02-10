@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "TwoBallRotationProgressBar.h"
+#import "NotificationViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

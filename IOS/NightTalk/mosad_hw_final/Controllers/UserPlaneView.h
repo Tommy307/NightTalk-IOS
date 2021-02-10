@@ -11,6 +11,7 @@
 #import "UserInfoEditView.h"
 #import "PasswordEditView.h"
 #import "AboutView.h"
+#import "NotificationViewController.h"
 
 #ifndef UserPlane_h
 #define UserPlane_h
@@ -56,6 +57,8 @@
 @property UILabel *score;
 
 @property UILabel *alert;
+
+@property UINavigationController * nav1;
 
 -(void)press2Login;
 -(void)press2Regit;
