@@ -7,6 +7,7 @@
 //
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
+#import "UserPlaneView.h"
 
 #ifndef UserInfoEditView_h
 #define UserInfoEditView_h

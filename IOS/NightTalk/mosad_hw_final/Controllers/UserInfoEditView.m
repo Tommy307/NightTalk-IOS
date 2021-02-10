@@ -90,7 +90,10 @@
 -(void)return2Plane{
     NSLog(@"return to user plane");
 //    AppDelegate *myDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-//    [myDelegate.editInfo removeFromSuperview]
+////    [myDelegate.editInfo removeFromSuperview]
+//    myDelegate.userName = self.username.text;
+    UserPlaneView * userPlaneView = (UserPlaneView *)self.superview;
+    userPlaneView.username.text = [NSString stringWithFormat:@"用户名： %@",self.textFieldA.text];
     self.alpha = 0;
 }
 
@@ -174,7 +177,7 @@
                 
                 [self return2Plane];
                 
-                [self layoutSubviews];         // 刷新一下页面，不然要半天z才自然刷新
+                [self layoutSubviews];         // 刷新一下页面，不然要半天才自然刷新
             }
         }];
     }];
@@ -213,13 +216,13 @@
     [_usernameInput resignFirstResponder];
 }
 
--(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey,id> *)info {
-    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
-    self.avatar.image = image;
-}
-
--(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    NSLog(@"aaaa");
-}
+//-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey,id> *)info {
+//    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+//    self.avatar.image = image;
+//}
+//
+//-(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+//    NSLog(@"aaaa");
+//}
 
 @end
