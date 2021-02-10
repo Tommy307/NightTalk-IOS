@@ -29,6 +29,26 @@
         }
         self.userArray = [[NSMutableArray alloc] initWithCapacity:0];
         self.voiceArray = [[NSMutableArray alloc] initWithCapacity:0];
+//        [self.userArray addObject:@"we"];
+//        [self.userArray addObject:@"gh"];
+//        [self.userArray addObject:@"yu"];
+//        [self.userArray addObject:@"yu"];
+//        [self.userArray addObject:@"yu"];
+//        [self.userArray addObject:@"yu"];
+//        [self.userArray addObject:@"yu"];
+//        [self.userArray addObject:@"yu"];
+//
+//        NSString*filePath = [[NSBundle mainBundle] pathForResource:@"1" ofType:@"m4a"];
+//               NSData* data= [NSData dataWithContentsOfFile:filePath];
+//        [self.voiceArray addObject:data];
+//        [self.voiceArray addObject:data];
+//        [self.voiceArray addObject:data];
+//        [self.voiceArray addObject:data];
+//        [self.voiceArray addObject:data];
+//        [self.voiceArray addObject:data];
+//        [self.voiceArray addObject:data];
+//        [self.voiceArray addObject:data];
+        
 //        NSMutableArray * array = [[NSMutableArray alloc] initWithCapacity:0];
 //        NSFileManager *manger = [NSFileManager defaultManager];
 //        NSString *path = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
@@ -360,6 +380,7 @@
 
 -(void) exit
 {
+    [self.navigationController popViewControllerAnimated:YES];
     AppDelegate *myDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     dispatch_group_t downloadGroup0 = dispatch_group_create();
     dispatch_group_enter(downloadGroup0);
@@ -384,9 +405,10 @@
         [self->getAudioTimer invalidate];
         self->getAudioTimer = nil;
        // [self->getAudioTimer setFireDate:[NSDate distantPast]];
-        [self dismissViewControllerAnimated:YES completion:^{
-            NSLog(@"back");
-        }];
+//        [self dismissViewControllerAnimated:YES completion:^{
+//            NSLog(@"back");
+//        }];
+        [self.navigationController popViewControllerAnimated:YES];
     });
 }
 
@@ -983,27 +1005,70 @@
     NSInteger tag1 = [tag integerValue];
     if(![complaintArray containsObject:_userArray[tag1]]) {
         [complaintArray addObject:_userArray[tag1]];
-        dispatch_group_t downloadGroup0 = dispatch_group_create();
-        dispatch_group_enter(downloadGroup0);
-        AppDelegate * myDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        AFHTTPSessionManager * manage = [AFHTTPSessionManager manager];
-        //设置请求体为JSON
-        manage.requestSerializer = [AFJSONRequestSerializer serializer];
-        //设置响应体为JSON
-        manage.responseSerializer = [AFJSONResponseSerializer serializer];
-        [manage PATCH:[NSString stringWithFormat:@"%@score/%@", myDelegate.URL, _userArray[tag1]] parameters:nil headers:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            if([responseObject isKindOfClass:[NSDictionary class]]) {
-                NSLog(@"%@", responseObject);
-                //信用分不够的弹窗，持续时间0.5s
-                UIAlertController * alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"投诉成功" preferredStyle:UIAlertControllerStyleAlert];
-                [self presentViewController:alertController animated:YES completion:nil];
-                [NSTimer scheduledTimerWithTimeInterval:0.8 target:self selector:@selector(timerAction1:) userInfo:alertController repeats:NO];
+        //投诉弹窗
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"投诉" message:@"请客观输入投诉内容" preferredStyle:UIAlertControllerStyleAlert];
+        //确认按钮
+        UIAlertAction *conform = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                NSLog(@"确认投诉");
+            
+            //将点击投诉对象回溯20条音频数据发送给后台进行审核
+            NSMutableArray * nArray = (NSMutableArray *)[[self.userArray reverseObjectEnumerator] allObjects];;
+            NSMutableArray * vArray = (NSMutableArray *)[[self.voiceArray reverseObjectEnumerator] allObjects];
+            self->_voiceOfcomplaintArray = [[NSMutableArray alloc] initWithCapacity:0];
+            if(nArray.count <= 20) {
+                for(int i = 0; i < nArray.count; i++) {
+                    if([nArray[i] isEqual:self->_userArray[tag1]]) {
+                        [self->_voiceOfcomplaintArray addObject:vArray[i]];
+                    }
+                }
+            } else {
+                for(int i = 0; i < 20; i++) {
+                    if([nArray[i] isEqual:self->_userArray[tag1]]) {
+                        [self->_voiceOfcomplaintArray addObject:vArray[i]];
+                    }
+                }
             }
-            dispatch_group_leave(downloadGroup0);
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            NSLog(@"投诉失败");
+            
+            for(int i = 0; i < self->_voiceOfcomplaintArray.count; i++) {
+                NSLog(@"%@", self->_voiceOfcomplaintArray[i]);
+            }
+            
+            
+            
+//            dispatch_group_t downloadGroup0 = dispatch_group_create();
+//            dispatch_group_enter(downloadGroup0);
+//            AppDelegate * myDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+//            AFHTTPSessionManager * manage = [AFHTTPSessionManager manager];
+//            //设置请求体为JSON
+//            manage.requestSerializer = [AFJSONRequestSerializer serializer];
+//            //设置响应体为JSON
+//            manage.responseSerializer = [AFJSONResponseSerializer serializer];
+//            [manage PATCH:[NSString stringWithFormat:@"%@score/%@", myDelegate.URL, self->_userArray[tag1]] parameters:nil headers:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+//                if([responseObject isKindOfClass:[NSDictionary class]]) {
+//                    NSLog(@"%@", responseObject);
+//                }
+//                dispatch_group_leave(downloadGroup0);
+//            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//                NSLog(@"投诉失败");
+//            }];
+//            dispatch_group_notify(downloadGroup0, dispatch_get_main_queue(), ^{});
         }];
-        dispatch_group_notify(downloadGroup0, dispatch_get_main_queue(), ^{});
+        //取消按钮
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            NSLog(@"取消投诉");
+        }];
+        //添加文本框 通过 alert.textFields.firstObject 获得该文本框
+        [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+            textField.placeholder = @"请填写您的投诉信息";
+        }];
+         
+        //3.将动作按钮 添加到控制器中
+        [alert addAction:conform];
+        [alert addAction:cancel];
+            
+        //4.显示弹框
+        [self presentViewController:alert animated:YES completion:nil];
+        
     } else {
         //信用分不够的弹窗，持续时间0.5s
         UIAlertController * alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"您已经投诉过他/她了！" preferredStyle:UIAlertControllerStyleAlert];

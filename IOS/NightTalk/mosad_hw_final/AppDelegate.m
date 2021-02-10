@@ -26,52 +26,65 @@
     self.password = @"";
     self.userAvatar = [UIImage imageNamed:@"haimianbaobao.jpg"];
     self.score = (uint)0;
+//    self.isLogin = true;
+//    self.userId = (uint)-1;           // 未登录 id 为 -1，正常的 id 从 1 开始
+//    self.userName = @"fg";
+//    self.password = @"fg";
+//    self.userAvatar = [UIImage imageNamed:@"haimianbaobao.jpg"];
+//    self.score = (uint)100;
     
-    self.roomID = (uint)-1;
+    self.topicIsChosed = NO;
+    self.notificationIsOpen = NO;
+    
+    self.roomID = (uint)19;
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     [self.window makeKeyAndVisible];
     self.matchViewController = [[MatchViewController alloc] init];
+    UINavigationController * nvc = [[UINavigationController alloc] initWithRootViewController:_matchViewController];
+    [self.window setRootViewController:nvc];
     
-    [self.window setRootViewController:self.matchViewController];
+//    self.matchViewController = [[TopicBankTableViewController alloc] init];
+//    UINavigationController * nvc = [[UINavigationController alloc] initWithRootViewController:_matchViewController];
+//    [self.window setRootViewController:nvc];
     
-    self.URL = @"http://172.26.119.166:8000/";
+    self.URL = @"http://192.168.0.120:8000/";
 //添加启动动画
-    self.adView = [[UIImageView alloc] initWithFrame:self.window.bounds];
-    [self.window addSubview: self.adView ];
-    NSString  *name = @"gouhuo.gif";
-    NSString  *filePath = [[NSBundle bundleWithPath:[[NSBundle mainBundle] bundlePath]] pathForResource:name ofType:nil];
-
-    NSData  *imageData = [NSData dataWithContentsOfFile:filePath];
-
-    self.adView.image = [UIImage sd_animatedGIFWithData:imageData];
-
-    CABasicAnimation *animation=[CABasicAnimation animationWithKeyPath:@"transform.scale"];
-    self.adView .layer.anchorPoint = CGPointMake(.5,.5);
-    animation.fillMode=kCAFillModeForwards;
-    animation.removedOnCompletion = NO;
-    [animation setAutoreverses:NO];
-
-    //动画时间
-    animation.duration=3.1;
-    animation.delegate=(id)self;
-
-    [self.adView.layer addAnimation:animation forKey:@"scale"];
+//    self.adView = [[UIImageView alloc] initWithFrame:self.window.bounds];
+//    [self.window addSubview: self.adView ];
+//    NSString  *name = @"gouhuo.gif";
+//    NSString  *filePath = [[NSBundle bundleWithPath:[[NSBundle mainBundle] bundlePath]] pathForResource:name ofType:nil];
+//
+//    NSData  *imageData = [NSData dataWithContentsOfFile:filePath];
+//
+//    self.adView.image = [UIImage sd_animatedGIFWithData:imageData];
+//
+//    CABasicAnimation *animation=[CABasicAnimation animationWithKeyPath:@"transform.scale"];
+//    self.adView .layer.anchorPoint = CGPointMake(.5,.5);
+//    animation.fillMode=kCAFillModeForwards;
+//    animation.removedOnCompletion = NO;
+//    [animation setAutoreverses:NO];
+//
+//    //动画时间
+//    animation.duration=3.1;
+//    animation.delegate=(id)self;
+//
+//    [self.adView.layer addAnimation:animation forKey:@"scale"];
     return YES;
 }
 
--(void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
-{
-    [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(addRefreshAnimate) userInfo:nil repeats:NO];
-
-}
-
--(void)addRefreshAnimate{
-    [UIView animateWithDuration:0.5 animations:^{
-        self.adView.alpha = 0;
-    }];
-    //[self.adView  removeFromSuperview];
-}
+//-(void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
+//{
+//    [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(addRefreshAnimate) userInfo:nil repeats:NO];
+//
+//}
+//
+//-(void)addRefreshAnimate{
+//    [UIView animateWithDuration:0.5 animations:^{
+//        self.adView.alpha = 0;
+//    }];
+//    //[self.adView  removeFromSuperview];
+//}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

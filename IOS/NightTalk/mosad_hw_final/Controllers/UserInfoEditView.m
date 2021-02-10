@@ -90,7 +90,10 @@
 -(void)return2Plane{
     NSLog(@"return to user plane");
 //    AppDelegate *myDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-//    [myDelegate.editInfo removeFromSuperview]
+////    [myDelegate.editInfo removeFromSuperview]
+//    myDelegate.userName = self.username.text;
+    UserPlaneView * userPlaneView = (UserPlaneView *)self.superview;
+    userPlaneView.username.text = [NSString stringWithFormat:@"用户名： %@",self.textFieldA.text];
     self.alpha = 0;
 }
 
@@ -174,7 +177,7 @@
                 
                 [self return2Plane];
                 
-                [self layoutSubviews];         // 刷新一下页面，不然要半天z才自然刷新
+                [self layoutSubviews];         // 刷新一下页面，不然要半天才自然刷新
             }
         }];
     }];
@@ -196,11 +199,30 @@
     pickVC.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     pickVC.delegate = myDelegate.matchViewController;
     pickVC.allowsEditing = YES;
-    
+    pickVC.modalPresentationStyle = UIModalPresentationFullScreen;
+    pickVC.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
     // 上传图片。显示控制器
     [myDelegate.matchViewController presentViewController:pickVC animated:YES completion:^{}];
+    
+//    [myDelegate.matchViewController.navigationController pushViewController:pickVC.viewControllers.firstObject animated:YES];
     self.maskView = pickVC.view;
 }
 
+//点击空白处收回键盘
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    [_textFieldA resignFirstResponder];
+    [_textFieldB resignFirstResponder];
+    [_textFieldC resignFirstResponder];
+    [_usernameInput resignFirstResponder];
+}
+
+//-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey,id> *)info {
+//    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+//    self.avatar.image = image;
+//}
+//
+//-(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+//    NSLog(@"aaaa");
+//}
 
 @end

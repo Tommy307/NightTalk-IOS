@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "TwoBallRotationProgressBar.h"
+#import "NotificationViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -25,6 +26,8 @@ NS_ASSUME_NONNULL_BEGIN
     
     //用于获取房间是否已满的信息
     NSString * message;
+    
+    int tip;
 }
 
 @property (strong) CAEmitterLayer *fireEmitter;

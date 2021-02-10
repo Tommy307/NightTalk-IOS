@@ -7,11 +7,12 @@
 //
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
+#import "UserPlaneView.h"
 
 #ifndef UserInfoEditView_h
 #define UserInfoEditView_h
 
-@interface UserInfoEditView : UIView<UITextFieldDelegate, UITextViewDelegate,UINavigationControllerDelegate>{
+@interface UserInfoEditView : UIView<UITextFieldDelegate, UITextViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate>{
     
 }
 

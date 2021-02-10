@@ -51,7 +51,7 @@
     self.appver.textAlignment = NSTextAlignmentCenter;
     self.appver.font = [UIFont systemFontOfSize:10];
     self.appver.textColor = [UIColor grayColor];
-    self.appver.text = @"Version: 0.1";
+    self.appver.text = @"Version: 0.2";
     [self addSubview:self.appver];
     
     

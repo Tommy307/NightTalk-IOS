@@ -13,6 +13,7 @@
 #import "HYBClockView.h"
 #import "HYBAnimationClock.h"
 #import "UserPlaneView.h"
+#import "TopicBankTableViewController.h"
 
 @interface MatchViewController ()
 
@@ -25,10 +26,10 @@
 @synthesize fireEmitter;
 @synthesize smokeEmitter;
 
-#pragma mark -
-#pragma mark View Lifecycle
+#pragma mark - View Lifecycle
 
 -(void)viewWillAppear:(BOOL)animated {
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
     //添加时钟动画
     CGFloat x = ([UIScreen mainScreen].bounds.size.width - 200) / 2;
     //    self.clockView = [[HYBClockView alloc] initWithFrame:CGRectMake(x, 40, 200, 200)
@@ -122,13 +123,16 @@
     
     [self setFireAmount:0.0];
     
-    //添加点击提示
-    imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tip.png"]];
-    imageView.frame = CGRectMake(190, 230, 210, 110);
-    imageView.alpha = 0.0f;
-    [self.view addSubview:imageView];
-    [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(addDelayAnimate1) userInfo:nil repeats:NO];
-    [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(addDelayAnimate2) userInfo:nil repeats:NO];
+    if(tip == 0) {
+        tip++;
+        //添加点击提示
+        imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tip.png"]];
+        imageView.frame = CGRectMake(190, 230, 210, 110);
+        imageView.alpha = 0.0f;
+        [self.view addSubview:imageView];
+        [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(addDelayAnimate1) userInfo:nil repeats:NO];
+        [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(addDelayAnimate2) userInfo:nil repeats:NO];
+    }
     
     label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 40)];
     label.center = CGPointMake(self.view.bounds.size.width/2+65, 433);
@@ -169,10 +173,52 @@
     
 //    self.userPlane.userAva
     [self.view layoutSubviews];
+    
+    if(myDelegate.topicIsChosed) {
+        self.aniClockView.userInteractionEnabled = NO;
+        myDelegate.topicIsChosed = NO;
+        NSLog(@"匹配");
+        [self setFireAmount:0.55];
+        [self.aniClockView addSecondAnimationWithAngle:0.0];
+        [self.aniClockView addMinuteAnimationWithWithAngle:0.0];
+        [self.aniClockView addHourAnimationWithAngle:0.0];
+
+        [UIView animateWithDuration:0.5 animations:^{
+            self->label.alpha = 1.0f;
+            self->progressBar.alpha = 1.0f;
+            self->cancel.alpha = 1.0f;
+        }];
+
+        dispatch_group_t downloadGroup0 = dispatch_group_create();
+        dispatch_group_enter(downloadGroup0);
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        [manager POST:[NSString stringWithFormat:@"%@room/join", myDelegate.URL] parameters:nil headers:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+            // 直接以 key value 的形式向 formData 中追加二进制数据
+            [formData appendPartWithFormData:[myDelegate.userName dataUsingEncoding:NSUTF8StringEncoding]
+                                        name:@"username"];
+        } progress:^(NSProgress * _Nonnull uploadProgress) {
+            //NSLog(@"ttt");
+        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            NSLog(@"success");
+            NSLog(@"%@", responseObject);
+            NSString * roomid = [responseObject objectForKey:@"roomid"];
+            myDelegate.roomID = (uint)[roomid intValue];
+            NSLog(@"roomid = %d", myDelegate.roomID);
+            dispatch_group_leave(downloadGroup0);
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            NSLog(@"fail");
+            NSLog(@"%@", error);
+        }];
+        dispatch_group_notify(downloadGroup0, dispatch_get_main_queue(), ^{
+            self->matchTime = 0;
+            self->timer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(matchingAnimation) userInfo:nil repeats:YES];
+        });
+    }
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    tip = 0;
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor whiteColor];
     UIView * view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
@@ -202,6 +248,7 @@
     
     AppDelegate *myDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     myDelegate.userPlane = [[UserPlaneView alloc] initWithFrame:CGRectMake(-(self.view.frame.size.width-40), 0, self.view.frame.size.width-40, self.view.frame.size.height)];
+    
 //    myDelegate.userPlane = [[UserPlaneView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width-40, self.view.frame.size.height)];
     [self.view addSubview:myDelegate.userPlane];
     
@@ -215,9 +262,20 @@
 -(void)pressDenglu{
 //    NSLog(@"here");
     AppDelegate *myDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    [UIView animateWithDuration:0.3 animations:^{
-        [myDelegate.userPlane setFrame:CGRectMake(0, 0, self.view.frame.size.width-40, self.view.frame.size.height)];
-    }];
+    if(!myDelegate.notificationIsOpen) {
+        [UIView animateWithDuration:0.3 animations:^{
+            [myDelegate.userPlane setFrame:CGRectMake(0, 0, self.view.frame.size.width-40, self.view.frame.size.height)];
+        }];
+    } else {
+//        NSLog(@"!!!!");
+        [self presentViewController:myDelegate.navigationController animated:NO completion:^{
+            NSLog(@"跳转到通知");
+            [myDelegate.navigationController.view.superview setFrame:CGRectMake(-(self.view.frame.size.width-40), 0, self.view.frame.size.width-40, self.view.bounds.size.height)];
+            [UIView animateWithDuration:0.3 animations:^{
+                [myDelegate.navigationController.view.superview setFrame:CGRectMake(0, 0, self.view.bounds.size.width-40, self.view.bounds.size.height)];
+            }];
+        }];
+    }
 }
 
 -(void)addDelayAnimate1
@@ -261,42 +319,28 @@
         uint score = myDelegate.score;
         if(score > 10) {
             self.aniClockView.userInteractionEnabled = NO;
-            NSLog(@"匹配");
-            [self setFireAmount:0.55];
-            [self.aniClockView addSecondAnimationWithAngle:0.0];
-            [self.aniClockView addMinuteAnimationWithWithAngle:0.0];
-            [self.aniClockView addHourAnimationWithAngle:0.0];
-            
-            [UIView animateWithDuration:0.5 animations:^{
-                self->label.alpha = 1.0f;
-                self->progressBar.alpha = 1.0f;
-                self->cancel.alpha = 1.0f;
+            TopicBankTableViewController * topicBankTableViewController = [[TopicBankTableViewController alloc] init];
+            UINavigationController * nvc = [[UINavigationController alloc] initWithRootViewController:topicBankTableViewController];
+            /*
+             UIModalPresentationFullScreen = 0,
+             UIModalPresentationFullScreen代表弹出VC时，presented VC充满全屏
+             如果弹出VC的wantsFullScreenLayout设置为YES的，则会填充到状态栏下边，
+             否则不会填充到状态栏之下。
+             */
+            nvc.modalPresentationStyle = 0;
+            /*
+             UIModalTransitionStyleCoverVertical = 0,   从底部滑入
+             UIModalTransitionStyleFlipHorizontal,      水平翻转进入
+             UIModalTransitionStyleCrossDissolve,       交叉溶解
+             UIModalTransitionStylePartialCurl,         翻页
+             */
+            nvc.modalTransitionStyle = 0;
+            [self presentViewController:nvc animated:YES completion:^{
+                NSLog(@"跳转到话题选择");
             }];
-            
-            dispatch_group_t downloadGroup0 = dispatch_group_create();
-            dispatch_group_enter(downloadGroup0);
-            AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-            [manager POST:[NSString stringWithFormat:@"%@room/join", myDelegate.URL] parameters:nil headers:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-                // 直接以 key value 的形式向 formData 中追加二进制数据
-                [formData appendPartWithFormData:[myDelegate.userName dataUsingEncoding:NSUTF8StringEncoding]
-                                            name:@"username"];
-            } progress:^(NSProgress * _Nonnull uploadProgress) {
-                //NSLog(@"ttt");
-            } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                NSLog(@"success");
-                NSLog(@"%@", responseObject);
-                NSString * roomid = [responseObject objectForKey:@"roomid"];
-                myDelegate.roomID = (uint)[roomid intValue];
-                NSLog(@"roomid = %d", myDelegate.roomID);
-                dispatch_group_leave(downloadGroup0);
-            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                NSLog(@"fail");
-                NSLog(@"%@", error);
-            }];
-            dispatch_group_notify(downloadGroup0, dispatch_get_main_queue(), ^{
-                self->matchTime = 0;
-                self->timer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(matchingAnimation) userInfo:nil repeats:YES];
-            });
+
+//            TalkingViewController * talkingViewController = [[TalkingViewController alloc] init];
+//            [self.navigationController pushViewController:talkingViewController animated:YES];
         } else {
             //信用分不够的弹窗，持续时间0.5s
             UIAlertController * alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"您的信用分过低，无法匹配" preferredStyle:UIAlertControllerStyleAlert];
@@ -350,9 +394,7 @@
     dispatch_group_notify(downloadGroup, dispatch_get_main_queue(), ^{
         if([self->message isEqualToString:@"full"]) {
             TalkingViewController * talkingViewController = [[TalkingViewController alloc] init];
-            [self presentViewController:talkingViewController animated:YES completion:^{
-                NSLog(@"跳转成功");
-            }];
+            [self.navigationController pushViewController:talkingViewController animated:YES];
             [self->timer invalidate];
             self->timer = nil;
         }
@@ -394,8 +436,7 @@
     cancel = nil;
 }
 
-#pragma mark -
-#pragma mark Interaction
+#pragma mark - Interaction
 
 - (void) setFireAmount:(float)zeroToOne
 {
