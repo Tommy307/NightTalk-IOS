@@ -92,6 +92,7 @@
 //    AppDelegate *myDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
 ////    [myDelegate.editInfo removeFromSuperview]
 //    myDelegate.userName = self.username.text;
+    
     UserPlaneView * userPlaneView = (UserPlaneView *)self.superview;
     userPlaneView.username.text = [NSString stringWithFormat:@"用户名： %@",self.textFieldA.text];
     self.alpha = 0;
