@@ -42,6 +42,8 @@
     [self.window makeKeyAndVisible];
     self.matchViewController = [[MatchViewController alloc] init];
     UINavigationController * nvc = [[UINavigationController alloc] initWithRootViewController:_matchViewController];
+//    TalkingViewController * talkingViewController = [[TalkingViewController alloc] init];
+//    UINavigationController * nvc = [[UINavigationController alloc] initWithRootViewController:talkingViewController];
     [self.window setRootViewController:nvc];
     
 //    self.matchViewController = [[TopicBankTableViewController alloc] init];

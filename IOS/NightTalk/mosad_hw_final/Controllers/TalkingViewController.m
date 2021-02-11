@@ -29,6 +29,13 @@
         }
         self.userArray = [[NSMutableArray alloc] initWithCapacity:0];
         self.voiceArray = [[NSMutableArray alloc] initWithCapacity:0];
+        self.topicArray = [[NSMutableArray alloc] initWithCapacity:0];
+        [self.topicArray addObject:@"你都喜欢什么类型的电影和电视呢？这个电视或者电影为什么会给你这么深的印象呢？"];
+        [self.topicArray addObject:@"你都喜欢什么类型的电影和电视呢？这个电视或者电影为什么会给你这么深的印象呢？"];
+        [self.topicArray addObject:@"你都喜欢什么类型的电影和电视呢？这个电视或者电影为什么会给你这么深的印象呢？"];
+        [self.topicArray addObject:@"你都喜欢什么类型的电影和电视呢？这个电视或者电影为什么会给你这么深的印象呢？"];
+        [self.topicArray addObject:@"你都喜欢什么类型的电影和电视呢？这个电视或者电影为什么会给你这么深的印象呢？"];
+        [self.topicArray addObject:@"你都喜欢什么类型的电影和电视呢？这个电视或者电影为什么会给你这么深的印象呢？"];
 //        [self.userArray addObject:@"we"];
 //        [self.userArray addObject:@"gh"];
 //        [self.userArray addObject:@"yu"];
@@ -136,6 +143,8 @@
     //去除分割线
     [tableView  setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.view addSubview:tableView];
+    //去除滚动条
+    tableView.showsVerticalScrollIndicator = NO;
     
 //顶部导航栏
     UIView * navigationBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
@@ -169,6 +178,10 @@
     navigationBar.layer.shadowOpacity = 0.7f;
     navigationBar.layer.shadowRadius = 2.0f;
     navigationBar.layer.shadowOffset = CGSizeMake(0, 1);
+    
+    UITapGestureRecognizer * tapTopic1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeTopic)];
+    [tapTopic1 setNumberOfTapsRequired:1];
+    [tableView addGestureRecognizer:tapTopic1];
     
 //语音栏
     microphoneBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width+60, 100)];
@@ -225,6 +238,80 @@
     recordOrCancel.image = [UIImage imageNamed:@"record1.png"];
     [self.view addSubview:recordOrCancel];
     recordOrCancel.alpha = 0.0f;
+    
+    UIButton * topicBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [topicBtn setFrame:CGRectMake(60, self.view.frame.size.height-50, 50, 20)];
+    [topicBtn setTitle:@"话题" forState:UIControlStateNormal];
+    [self.view addSubview:topicBtn];
+    topicBtn.titleLabel.font = [UIFont systemFontOfSize:20];
+    topicBtn.backgroundColor = [UIColor clearColor];
+    topicBtn.tintColor = [UIColor colorWithRed:0.07 green:0.585 blue:0.855 alpha:1];
+    [topicBtn addTarget:self action:@selector(pressTopic:) forControlEvents:UIControlEventTouchUpInside];
+    topicBtn.tag = 0;
+    
+//显示话题
+    self.scrollView = [[UIScrollView alloc] init];
+    self.scrollView.layer.cornerRadius = 15;
+    self.scrollView.scrollEnabled = YES;
+    self.scrollView.bounces = YES;
+    CGFloat height = 0;
+    for(int i = 0; i < self.topicArray.count; i++) {
+        NSString * str = [NSString stringWithFormat:@"%d. %@", i+1, self.topicArray[i]];
+        CGSize size = [self getSizeOftopic:str];
+        UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(15, height + 15, size.width, size.height)];
+        label.numberOfLines = 0;
+        label.text = str;
+        label.font = [UIFont systemFontOfSize:18];
+        label.textColor = [UIColor whiteColor];
+        label.backgroundColor = [UIColor clearColor];
+        height += (size.height + 15);
+        [self.scrollView addSubview:label];
+    }
+    if(height > 400 - 15) {
+        self.scrollView.frame = CGRectMake(0, 0, self.view.frame.size.width-70, 400);
+    } else {
+        self.scrollView.frame = CGRectMake(0, 0, self.view.frame.size.width-70, height+15);
+    }
+    self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width-70, height+15);
+    self.scrollView.center = CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height/2);
+    self.scrollView.backgroundColor = [UIColor colorWithRed:50.0/255 green:50.0/255 blue:50.0/255 alpha:0.8];
+    [self.view addSubview:self.scrollView];
+    
+    self.scrollView.alpha = 0;
+    [UIView animateWithDuration:0.8 animations:^{
+        self.scrollView.alpha = 1;
+    } completion:^(BOOL finished) {
+        [NSTimer scheduledTimerWithTimeInterval:2 repeats:NO block:^(NSTimer * _Nonnull timer) {
+            [UIView animateWithDuration:0.2 animations:^{
+                self.scrollView.alpha = 0;
+            }];
+        }];
+    }];
+}
+
+-(void)pressTopic:(UIButton *)btn {
+    if(self.scrollView.alpha == 0) {
+        NSLog(@"显示话题");
+        self.scrollView.alpha = 1;
+    } else {
+        NSLog(@"关闭话题");
+        self.scrollView.alpha = 0;
+    }
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    self.scrollView.alpha = 0;
+}
+
+//计算文本大小以确定UILabel高度
+-(CGSize) getSizeOftopic : (NSString *)text {
+        CGSize size = [text boundingRectWithSize:CGSizeMake([UIScreen mainScreen].bounds.size.width - 100, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]} context:nil].size;
+    return size;
+}
+
+-(void)closeTopic {
+    NSLog(@"tt");
+    self.scrollView.alpha = 0;
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -243,7 +330,7 @@
             //NSLog(@"ttt");
         } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             //NSLog(@"拿取音频名字成功");
-            NSLog(@"%@", responseObject);
+            //NSLog(@"%@", responseObject);
             if([[responseObject objectForKey:@"msg"] isKindOfClass:[NSArray class]]) {
                 self->haveAudio = YES;
                 self->audioNameArray = [responseObject objectForKey:@"msg"];
@@ -293,11 +380,24 @@
                         //创建文件管理器
                         NSFileManager * fileManager = [NSFileManager defaultManager];
                         [fileManager removeItemAtPath:[self->filePath path] error:nil];
-                        [self->tableView reloadData];
+                        
+                        [self->tableView beginUpdates];
+                        NSIndexPath * indexpath = [NSIndexPath indexPathForRow:self->_voiceArray.count-1 inSection:0];
+                        [self->tableView insertRowsAtIndexPaths:@[indexpath] withRowAnimation:UITableViewRowAnimationBottom];
+                        [self->tableView endUpdates];
+                        
+                        
+                        //[self->tableView reloadData];
                         dispatch_async(dispatch_get_main_queue(),^{
-                            if (self->tableView.contentSize.height > self->tableView.bounds.size.height) {
-                                [self->tableView setContentOffset:CGPointMake(0, self->tableView.contentSize.height - self->tableView.bounds.size.height) animated:NO];
-                            }
+                            
+//                            if (self->tableView.contentSize.height > self->tableView.bounds.size.height) {
+//                                [self->tableView setContentOffset:CGPointMake(0, self->tableView.contentSize.height - self->tableView.bounds.size.height) animated:YES];
+//                            }
+                            //滚动到底部
+                            if ([self->tableView numberOfRowsInSection:0] > 0) {
+                                        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:([self->tableView numberOfRowsInSection:0]-1) inSection:0];
+                                        [self->tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+                                    }
                         });
                     }];
                     //执行Task
@@ -404,6 +504,8 @@
     dispatch_group_notify(downloadGroup0, dispatch_get_main_queue(), ^{
         [self->getAudioTimer invalidate];
         self->getAudioTimer = nil;
+        [self->_player stop];
+        self->lastSound.superview.tag = 0;
        // [self->getAudioTimer setFireDate:[NSDate distantPast]];
 //        [self dismissViewControllerAnimated:YES completion:^{
 //            NSLog(@"back");
@@ -413,16 +515,16 @@
 }
 
 -(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 1;
+    return self.voiceArray.count;
 }
 
 //默认组数返回1
 -(NSInteger) numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.voiceArray.count;
+    return 1;
 }
 
 -(UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString * strCell = [NSString stringWithFormat:@"cell%ld", indexPath.section];
+    NSString * strCell = [NSString stringWithFormat:@"cell%ld", indexPath.row];
     //尝试获取可以复用的单元格
     //如果得不到，返回为nil
     UITableViewCell * cell = [tableView cellForRowAtIndexPath:indexPath];
@@ -443,7 +545,7 @@
     AFHTTPSessionManager * session = [AFHTTPSessionManager manager];
     __block NSString * imageName = [[NSString alloc] init];
     //拿取用户头像
-    [session GET:[NSString stringWithFormat:@"%@user/%@",myDelegate.URL, self->_userArray[indexPath.section]] parameters:nil headers:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+    [session GET:[NSString stringWithFormat:@"%@user/%@",myDelegate.URL, self->_userArray[indexPath.row]] parameters:nil headers:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         //NSLog(@"下载content中");
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSLog(@"获取头像成功");
@@ -474,15 +576,15 @@
 
 //名称
     UILabel * name = [[UILabel alloc] init];
-    name.text = self.userArray[indexPath.section];
+    name.text = self.userArray[indexPath.row];
     CGSize size = [self getSize:name.text];
     [name setTextColor:[UIColor blackColor]];
     name.backgroundColor = [UIColor clearColor];
     [name setFont:[UIFont systemFontOfSize:15]];
     [cell.contentView addSubview:name];
 //聊天框
-//    AVAudioPlayer * player = [[AVAudioPlayer alloc] initWithContentsOfURL:self.voiceArray[indexPath.section] error:nil];
-    AVAudioPlayer * player = [[AVAudioPlayer alloc] initWithData:self.voiceArray[indexPath.section] error:nil];
+//    AVAudioPlayer * player = [[AVAudioPlayer alloc] initWithContentsOfURL:self.voiceArray[indexPath.row] error:nil];
+    AVAudioPlayer * player = [[AVAudioPlayer alloc] initWithData:self.voiceArray[indexPath.row] error:nil];
     // NSLog(@"%@",player);
 
     CGFloat width = 60+140*floor(player.duration)/60;
@@ -506,7 +608,7 @@
     UIImageView * sound = [[UIImageView alloc] init];
     sound.image = [UIImage imageNamed:@"voice3.png"];
     sound.backgroundColor = [UIColor clearColor];
-    sound.tag = indexPath.section;
+    sound.tag = indexPath.row;
     [voice addSubview:sound];
     
     UILabel * voiceTime = [[UILabel alloc] init];
@@ -515,7 +617,7 @@
     voiceTime.text = [NSString stringWithFormat:@"%.f\"", ceil(player.duration)];
     [voice addSubview:voiceTime];
 
-    if([self.userArray[indexPath.section] isEqualToString:myDelegate.userName])
+    if([self.userArray[indexPath.row] isEqualToString:myDelegate.userName])
     {
         image.frame = CGRectMake(self.view.frame.size.width-10-45, 10, 45, 45);
         image.backgroundColor = [UIColor whiteColor];
@@ -573,7 +675,7 @@
         layer.shadowRadius = 1.5f;
         layer.shadowOffset = CGSizeMake(-2.2, 0);
         
-        image.tag = indexPath.section;
+        image.tag = indexPath.row;
         image.userInteractionEnabled = YES;
         UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addUIMenuItem:)];
         [tap setNumberOfTapsRequired:1];
@@ -589,11 +691,11 @@
 
 //选中单元格调用此协议函数
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
-    //NSLog(@"选中单元格 %ld, %ld", indexPath.section, indexPath.row);
+    //NSLog(@"选中单元格 %ld, %ld", indexPath.row, indexPath.row);
 }
 //取消选中单元格调用此协议函数
 -(void) tableView:(UITableView *) tableView didDeselectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
-    //NSLog(@"取消选中单元格 %ld, %ld", indexPath.section, indexPath.row);
+    //NSLog(@"取消选中单元格 %ld, %ld", indexPath.row, indexPath.row);
 }
 
 //计算文本大小以确定UILabel高度
@@ -617,13 +719,23 @@
 }
 
 -(void)pressPlay:(UITapGestureRecognizer*)tap {
+    self.scrollView.alpha = 0;
+    if(![tagTimer isEqual:[NSNull class]]) {
+        [tagTimer invalidate];
+        tagTimer = nil;
+    }
     UIView * view = (UIView *)tap.view;
     UIImageView * sound = view.subviews[0];
-    if(![lastSound isKindOfClass:[NSNull class]] && ![lastSound isEqual:sound]) {
+    if(![lastSound isEqual:sound]) {
+        NSLog(@"UnEqual");
         [lastSound stopAnimating];
         [lastSound performSelector:@selector(setAnimationImages:) withObject:nil];
         lastSound.superview.tag = 0;
+    } else {
+        [tagTimer invalidate];
+        tagTimer = nil;
     }
+    lastSound = sound;
     if(view.tag == 0) {
         view.tag = 1;
         //创建音频播放器对象
@@ -668,9 +780,8 @@
         [sound performSelector:@selector(setAnimationImages:) withObject:nil];
         //sound.image = [UIImage imageNamed:@"voice3.png"];
     }
-    
-    lastSound = sound;
-    [NSTimer scheduledTimerWithTimeInterval:_player.duration repeats:NO block:^(NSTimer * _Nonnull timer) {
+
+    tagTimer = [NSTimer scheduledTimerWithTimeInterval:_player.duration repeats:NO block:^(NSTimer * _Nonnull timer) {
         [self->lastSound stopAnimating];
         self->lastSound.superview.tag = 0;
     }];
@@ -678,7 +789,13 @@
 
 -(void)touchDown:(UIButton*)btn
 {
+    self.scrollView.alpha = 0;
     NSLog(@"touchDown");
+    [_player stop];
+    lastSound.superview.tag = 0;
+    [lastSound stopAnimating];
+    [lastSound performSelector:@selector(setAnimationImages:) withObject:nil];
+    lastSound.superview.tag = 1;
     [UIImageView animateWithDuration:0.2 animations:^{
         self->recordOrCancel.alpha = 1.0f;
         self->recordOrCancel.image = self->recordAnimationArray[0];
@@ -918,6 +1035,9 @@
 
 -(void)selectBackgroundPicture:(UIButton*)btn
 {
+    self.scrollView.alpha = 0;
+    [self->_player stop];
+    lastSound.superview.tag = 0;
     //创建UIImagePickerController对象
     UIImagePickerController *pickController = [[UIImagePickerController alloc] init];
     /**
@@ -930,6 +1050,7 @@
     [pickController setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
     //设置代理
     pickController.delegate = (id)self;
+    pickController.modalPresentationStyle = UIModalPresentationFullScreen;
     //视图跳转
     [self presentViewController:pickController animated:YES completion:^{
         NSLog(@"加载图片成功");
@@ -1000,6 +1121,7 @@
 
 -(void)menuComplainPressed:(UIMenuItem*)menuItem
 {
+    self.scrollView.alpha = 0;
     NSLog(@"投诉");
     NSNumber * tag = [_cellSelectDic objectForKey:@"tag"];
     NSInteger tag1 = [tag integerValue];
@@ -1030,7 +1152,7 @@
             }
             
             for(int i = 0; i < self->_voiceOfcomplaintArray.count; i++) {
-                NSLog(@"%@", self->_voiceOfcomplaintArray[i]);
+                //NSLog(@"%@", self->_voiceOfcomplaintArray[i]);
             }
             
             

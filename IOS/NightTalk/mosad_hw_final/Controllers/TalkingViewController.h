@@ -58,12 +58,18 @@ NS_ASSUME_NONNULL_BEGIN
     NSString * complaintUserName;
     //用于投诉
     NSMutableDictionary * _cellSelectDic;
+    
+    NSTimer * tagTimer;
 } 
 
 @property (nonatomic, retain) NSMutableArray * userArray;
 @property (nonatomic, retain) NSMutableArray * voiceArray;
 
 @property (nonatomic, retain) NSMutableArray * voiceOfcomplaintArray;
+//话题显示框
+@property (nonatomic, nonnull) UIScrollView * scrollView;
+//话题数组
+@property (nonatomic, nonnull) NSMutableArray * topicArray;
 
 @end
 
