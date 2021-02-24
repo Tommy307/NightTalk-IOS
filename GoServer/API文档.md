@@ -12,12 +12,6 @@ type User struct {
 	Scores   uint `gorm:"default:100"`
 }
 
-// TableName ...
-func (User) TableName() string {
-	return "user"
-}
-```
-
 - `Audio`
 ``` go
 // Audio 录音信息
@@ -27,12 +21,6 @@ type Audio struct {
 	Poster string
 	RoomID uint
 }
-
-// TableName 指定Audio对应的数据表的名字
-func (Audio) TableName() string {
-	return "audio"
-}
-```
 
 - `Room`
 ``` go
@@ -45,12 +33,6 @@ type Room struct {
 	Recordtimes string
 }
 
-// TableName 指定Room对应的数据表的名字
-func (Room) TableName() string {
-	return "room"
-}
-```
-
 - `Topic`
 ``` go
 // Topic 话题
@@ -58,34 +40,26 @@ type Topic struct {
 	ID          uint
 	Content     string
   	Score       uint      // 对话题进行评分，分数低的进行剔除
-	Activate    bool      // 是否激活，用户自定义话题进入话题库，处于未激活状态，仅用于当次的聊天
+	Activate    bool      // 是否激活（== 1 表示激活），用户自定义话题进入话题库，处于未激活状态，仅用于当次的聊天
 }
-
-// TableName 指定Topic对应的数据表的名字
-func (Topic) TableName() string {
-	return "topic"
-}
-```
 
 - `Message`
 ``` go
 // Message 消息
 // 目前只有举报消息
 type Message struct {
-	ID          uint
-	Sender	    string
-	Content     string
-	Time	    time
-	Dirty	    bool		// 是否已读
+	ID          		uint
+	Sender	    		string
+	Content     		string
+	Time	    		time
+	Dirty	    		bool		// 是否处理，为 0 表示未处理（认同举报或拒绝举报）
+	Reported_User_ID	uint		// 被举报用户的 ID
+	Audios      		array		// 被举报用户的音频信息（至多20条音频）
 }
-
-// TableName 指定Message对应的数据表的名字
-func (Message) TableName() string {
-	return "Message"
-}
-```
 
 # API设计
+
+## IOS 端使用 API   
 
 - 用户注册
 
@@ -139,14 +113,14 @@ func (Message) TableName() string {
 
 `localhost:8000/wav/:audioname GET`
 
-- 获取话题
+- 获取话题			
 
 `localhost:8000/topic GET`
 
 返回：
 |参数| 类型 |
 |---|---|
-|topics | array|                // 话题库中的所有话题
+|topics | array|		// 仅返回常驻话题 ！！！（暂定常驻10条）
 
 - 用户加入一个未满的房间
 
@@ -162,10 +136,10 @@ func (Message) TableName() string {
 `localhost:8000/room/check/:roomid GET`
 
 返回需要添加：
-|topics | array|                // 用户选择的话题
-|custom-topic | array|         // 用户自定义的话题
+|topics | array|                // 用户选择的话题中重合度较高的前 5 条话题（无重合或重合不足 5 条则随机返回有用户选择的话题）
+|custom-topic | array|          // 用户自定义的话题
 
-- 删除房间中的某个用户，如果房间中用户数为0，删除该房间
+- 删除房间中的某个用户，如果房间中用户数为0，删除该房间以及房间有关的音频文件
 
 `localhost:8000/room/cancel POST`
 |参数| 类型 |
@@ -193,10 +167,44 @@ func (Message) TableName() string {
 |username | string|			 // 举报的用户账户名
 |reason | string|		 	 // 举报原因，供举报系统使用
 |time | time|
+|audios | array|			 // 举报时间线之前，回溯被举报用户至多 20 条音频
 
 - 扣除用户信用分
 
 `localhost:8000/score/:username PATCH`		 // 一次扣10分
 
-# 特殊功能
+## 后台管理使用 API
+
+- 获取举报消息
+
+`localhost:8000/messages_client GET`
+
+返回 Message 库中所有 dirty == 0（未处理） 的消息  
+
+- 获取常驻话题
+
+`localhost:8000/topics_client GET`
+
+返回 Topic 库中所有常驻话题
+
+- 添加常驻话题
+
+`localhost:8000/topic_client POST`
+|参数| 类型 |
+|---|---|
+|topic | string|
+
+将创建的话题，直接作为常驻话题（Activate = 1）添加到 Topic 库中
+
+- 删除常驻话题
+
+`localhost:8000/topic_client PATCH`
+|参数| 类型 |
+|---|---|
+|topic | string|
+
+删除常驻话题
+
+# 特色功能
 将用户自定义话题存储起来，对话题库中评分低的（用户每次选择就给话题加1分）予以替换。
+!(学习功能实现流程图)[]
