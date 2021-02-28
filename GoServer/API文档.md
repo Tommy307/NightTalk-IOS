@@ -11,6 +11,7 @@ type User struct {
 	Avatar   string
 	Scores   uint `gorm:"default:100"`
 }
+```
 
 - `Audio`
 ``` go
@@ -21,6 +22,7 @@ type Audio struct {
 	Poster string
 	RoomID uint
 }
+```
 
 - `Room`
 ``` go
@@ -32,6 +34,7 @@ type Room struct {
 	Num         uint
 	Recordtimes string
 }
+```
 
 - `Topic`
 ``` go
@@ -42,6 +45,7 @@ type Topic struct {
   	Score       uint      // 对话题进行评分，分数低的进行剔除
 	Activate    bool      // 是否激活（== 1 表示激活），用户自定义话题进入话题库，处于未激活状态，仅用于当次的聊天
 }
+```
 
 - `Message`
 ``` go
@@ -56,6 +60,7 @@ type Message struct {
 	Reported_User_ID	uint		// 被举报用户的 ID
 	Audios      		array		// 被举报用户的音频信息（至多20条音频）
 }
+```
 
 # API设计
 
