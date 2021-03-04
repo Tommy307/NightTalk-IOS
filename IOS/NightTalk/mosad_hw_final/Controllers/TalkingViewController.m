@@ -88,23 +88,23 @@
     return self;
 }
 
-//直接插入排序
-- (void)sort:(NSMutableArray *)arr {
-    // 外层循环用于跑多少趟
-    for (int i = 1; i < arr.count; i ++) {
-        int temp = (int)[arr[i] integerValue];
-        NSData * data = self.voiceArray[i];
-        // 内层循环用于移动元素位置
-        for (int j = i - 1; j >= 0 && temp < [arr[j] integerValue]; j --) {
-            arr[j + 1] = arr[j];
-            //arr[j] = [NSNumber numberWithInt:temp];
-            arr[j] = [NSString stringWithFormat:@"%d", temp];
-            self.voiceArray[j+1] = self.voiceArray[j];
-            self.voiceArray[j] = data;
-        }
-    }
-    NSLog(@"插入排序结果：%@",arr);
-}
+////直接插入排序
+//- (void)sort:(NSMutableArray *)arr {
+//    // 外层循环用于跑多少趟
+//    for (int i = 1; i < arr.count; i ++) {
+//        int temp = (int)[arr[i] integerValue];
+//        NSData * data = self.voiceArray[i];
+//        // 内层循环用于移动元素位置
+//        for (int j = i - 1; j >= 0 && temp < [arr[j] integerValue]; j --) {
+//            arr[j + 1] = arr[j];
+//            //arr[j] = [NSNumber numberWithInt:temp];
+//            arr[j] = [NSString stringWithFormat:@"%d", temp];
+//            self.voiceArray[j+1] = self.voiceArray[j];
+//            self.voiceArray[j] = data;
+//        }
+//    }
+//    NSLog(@"插入排序结果：%@",arr);
+//}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -1134,19 +1134,22 @@
                 NSLog(@"确认投诉");
             
             //将点击投诉对象回溯20条音频数据发送给后台进行审核
-            NSMutableArray * nArray = (NSMutableArray *)[[self.userArray reverseObjectEnumerator] allObjects];;
+            NSMutableArray * nArray = (NSMutableArray *)[[self.userArray reverseObjectEnumerator] allObjects];
             NSMutableArray * vArray = (NSMutableArray *)[[self.voiceArray reverseObjectEnumerator] allObjects];
+            NSMutableArray * VNArray = (NSMutableArray *)[[self->audioNameArray reverseObjectEnumerator] allObjects];
             self->_voiceOfcomplaintArray = [[NSMutableArray alloc] initWithCapacity:0];
             if(nArray.count <= 20) {
                 for(int i = 0; i < nArray.count; i++) {
                     if([nArray[i] isEqual:self->_userArray[tag1]]) {
-                        [self->_voiceOfcomplaintArray addObject:vArray[i]];
+                        //[self->_voiceOfcomplaintArray addObject:vArray[i]];
+                        [self.voiceOfcomplaintArray addObject:VNArray[i]];
                     }
                 }
             } else {
                 for(int i = 0; i < 20; i++) {
                     if([nArray[i] isEqual:self->_userArray[tag1]]) {
-                        [self->_voiceOfcomplaintArray addObject:vArray[i]];
+                        //[self->_voiceOfcomplaintArray addObject:vArray[i]];
+                        [self.voiceOfcomplaintArray addObject:VNArray[i]];
                     }
                 }
             }

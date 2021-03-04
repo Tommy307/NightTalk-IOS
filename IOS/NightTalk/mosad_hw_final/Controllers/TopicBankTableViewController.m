@@ -8,6 +8,7 @@
 
 #import "TopicBankTableViewController.h"
 #import "AppDelegate.h"
+#import "AFNetworking.h"
 
 @interface TopicBankTableViewController ()
 
@@ -20,24 +21,51 @@
     if (self) {
         _selectedTopics = [[NSMutableArray alloc] initWithCapacity:0];
         _topics = [[NSMutableArray alloc] initWithCapacity:0];
-        [_topics addObject:@"你周末一般都喜欢干什么呀？"];
-        [_topics addObject:@"你无聊的时候喜欢看书吗？"];
-        [_topics addObject:@"如果有一天自己变成了超人你最想干什么呢？"];
-        [_topics addObject:@"你喜欢养宠物吗？"];
-        [_topics addObject:@"你去电玩城玩过跳舞机吗？"];
-        [_topics addObject:@"你喜欢养花花草草吗？"];
-        [_topics addObject:@"你都喜欢什么类型的电影和电视呢？这个电视或者电影为什么会给你这么深的印象呢？"];
-        [_topics addObject:@"什么样子的人你最不想和他相处呢？"];
-        [_topics addObject:@"有没有什么童年发生的事情是让你觉得很难忘的呢？"];
-        [_topics addObject:@"容貌和生命你觉得哪个更重要，如果让你用容貌去换长生不老你愿意吗？"];
-        [_topics addObject:@"你会不会做饭啊？在平时生活中你都是怎么做的呀？"];
-        [_topics addObject:@"如果可以重来一次的话，你喜欢你是男人还是女人呢？"];
-        [_topics addObject:@"如果你很丑或者有一天你毁容了你会选择去整容吗？"];
-        [_topics addObject:@"如果有一天有了时光机你最想回到哪一天？"];
-        [_topics addObject:@"你怎么看待宋仲基和宋慧乔的事件呢？（随便一个新闻热点都可以）"];
-        [_topics addObject:@"如果容貌和智慧只能二选其一，那么你会坚定的选择哪一个呢？"];
-        [_topics addObject:@"你觉得你们的老板人品怎么样呢？"];
-        [_topics addObject:@"你受到打击或者遇到挫折的时候都是怎么鼓励自己的呢？"];
+        
+        AppDelegate *myDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+        
+        dispatch_group_t downloadGroup1 = dispatch_group_create();
+        dispatch_group_enter(downloadGroup1);
+        //获取AFHTTPSection对象
+        AFHTTPSessionManager * session = [AFHTTPSessionManager manager];
+        //判断房间是否满员
+        [session GET:[NSString stringWithFormat:@"%@topic",myDelegate.URL] parameters:nil headers:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+            //NSLog(@"下载content中");
+        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            //NSLog(@"下载content成功");
+            if([responseObject isKindOfClass:[NSDictionary class]]) {
+                NSArray * array = [responseObject objectForKey:@"topics"];
+                for(int i = 0; i < array.count; i++) {
+                    NSDictionary * dictionary = array[i];
+                    NSString * string = [dictionary objectForKey:@"Content"];
+                    [self.topics addObject:string];
+                }
+            }
+            dispatch_group_leave(downloadGroup1);
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            NSLog(@"加载话题失败");
+        }];
+        dispatch_group_notify(downloadGroup1, dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+//        [_topics addObject:@"你周末一般都喜欢干什么呀？"];
+//        [_topics addObject:@"你无聊的时候喜欢看书吗？"];
+//        [_topics addObject:@"如果有一天自己变成了超人你最想干什么呢？"];
+//        [_topics addObject:@"你喜欢养宠物吗？"];
+//        [_topics addObject:@"你去电玩城玩过跳舞机吗？"];
+//        [_topics addObject:@"你喜欢养花花草草吗？"];
+//        [_topics addObject:@"你都喜欢什么类型的电影和电视呢？这个电视或者电影为什么会给你这么深的印象呢？"];
+//        [_topics addObject:@"什么样子的人你最不想和他相处呢？"];
+//        [_topics addObject:@"有没有什么童年发生的事情是让你觉得很难忘的呢？"];
+//        [_topics addObject:@"容貌和生命你觉得哪个更重要，如果让你用容貌去换长生不老你愿意吗？"];
+//        [_topics addObject:@"你会不会做饭啊？在平时生活中你都是怎么做的呀？"];
+//        [_topics addObject:@"如果可以重来一次的话，你喜欢你是男人还是女人呢？"];
+//        [_topics addObject:@"如果你很丑或者有一天你毁容了你会选择去整容吗？"];
+//        [_topics addObject:@"如果有一天有了时光机你最想回到哪一天？"];
+//        [_topics addObject:@"你怎么看待宋仲基和宋慧乔的事件呢？（随便一个新闻热点都可以）"];
+//        [_topics addObject:@"如果容貌和智慧只能二选其一，那么你会坚定的选择哪一个呢？"];
+//        [_topics addObject:@"你觉得你们的老板人品怎么样呢？"];
+//        [_topics addObject:@"你受到打击或者遇到挫折的时候都是怎么鼓励自己的呢？"];
     }
     return  self;
 }
@@ -45,7 +73,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title = @"话题";
+    self.title = @"选择话题";
     UIBarButtonItem * rightItem = [[UIBarButtonItem alloc] initWithTitle:@"确定" style:UIBarButtonItemStylePlain target:self action:@selector(finishSelect)];
     self.navigationItem.rightBarButtonItem = rightItem;
     UIBarButtonItem * leftItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(cancel)];
@@ -94,11 +122,11 @@
 
 //每个cell的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(indexPath.row %2 == 0) {
+    if(indexPath.row % 2 == 0) {
         CGSize size = [self getSize:_topics[indexPath.row/2]];
         return size.height+25;
     } else {
-        return 12;
+        return 24;
     }
 }
 
@@ -114,14 +142,15 @@
         cell.textLabel.font = [UIFont systemFontOfSize:18];
         cell.textLabel.numberOfLines = 0;
         cell.contentView.layer.borderColor = [UIColor blueColor].CGColor;
-        cell.contentView.layer.borderWidth = 1.5;
-        cell.contentView.layer.cornerRadius = 10;
+        cell.contentView.layer.borderWidth = 0;
+        cell.contentView.layer.cornerRadius = 0;
         //设为NO时，边框外的画面依然会被显示出来--这里貌似没有用
         cell.contentView.layer.masksToBounds = YES;
         //被选中时的颜色--用此方法解决
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.tag = 0;
         //cell.accessoryType = UIAccessibilityTraitNone;
+        
         for (NSIndexPath *index in _selectIndexs) {
             if (indexPath == index) {
                 //cell.accessoryType = UITableViewCellAccessoryCheckmark;
@@ -148,18 +177,23 @@
 //        cell.contentView.backgroundColor = [UIColor greenColor];
 //        [_selectIndexs addObject:indexPath]; //添加索引数据到数组
 //    }
+    CGSize size = [self getSize:_topics[indexPath.row/2]];
+    _view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 7, size.height+25)];
     
     if (cell.tag == 1) {  //如果为选中状态
         cell.tag = 0; //切换为未选中
         cell.contentView.backgroundColor = [UIColor whiteColor];
         [_selectIndexs removeObject:indexPath]; //数据移除
         [_selectedTopics removeObject:_topics[indexPath.row/2]];
+        _view.backgroundColor = [UIColor whiteColor];
     }else { //未选中状态
         cell.tag = 1; //切换为选中
-        cell.contentView.backgroundColor = [UIColor colorWithRed:0.07 green:0.585 blue:0.855 alpha:0.5];
+        _view.backgroundColor = [UIColor colorWithRed:106.0/255 green:153.0/255 blue:229.0/255 alpha:1];
+        cell.contentView.backgroundColor = [UIColor colorWithRed:238.0/255 green:245.0/255 blue:254.0/255 alpha:1];
         [_selectIndexs addObject:indexPath]; //添加索引数据到数组
         [_selectedTopics addObject:_topics[indexPath.row/2]];
     }
+    [cell.contentView addSubview:_view];
 }
 
 //组头部高度
@@ -183,7 +217,7 @@
      _textField.layer.borderWidth = 1;
      _textField.layer.borderColor = [UIColor colorWithRed:0.07 green:0.585 blue:0.855 alpha:1].CGColor;
      _textField.layer.cornerRadius = 7;
-     _textField.placeholder = @"自定义话题";
+     _textField.placeholder = @"自定义话题，最多输入15个字";
      _textField.clearButtonMode = UITextFieldViewModeAlways;
      //文本字段的拼写检查行为。此属性决定了拼写检查在打字过程中是启用还是禁用
      _textField.spellCheckingType = UITextSpellCheckingTypeYes;
@@ -198,6 +232,8 @@
      [_textField setBackgroundColor:[UIColor whiteColor]];
      
      [headerView addSubview:_textField];
+     
+     [_textField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
      
 //     UILabel *label = [[UILabel alloc]init];
 //     label.textColor = [UIColor grayColor];
@@ -230,7 +266,7 @@
      label.frame = CGRectMake(10, 0, self.view.frame.size.width-20, 70);
      label.numberOfLines = 0;
      label.backgroundColor = [UIColor clearColor];
-     label.text = @"请至少选择一个话题，若没有您想选择的话题，请在自定义话题区域写入您想要谈论的，以供我们后续更新。";
+     label.text = @"请从以上话题中选择话题，若没有您想选择的话题，请在自定义话题区域写入您想要谈论的。";
 
      [headerView addSubview:label];
 
@@ -263,6 +299,8 @@
 -(void)finishSelect {
     [_textField resignFirstResponder];
     
+    AppDelegate *myDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    
     if(_selectedTopics.count == 0 && [_textField.text isEqualToString:@""]) {
         //选择话题提示弹窗
         UIAlertController * alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"请至少选择一个话题，或在自定义话题区域写入您想要谈论的话题" preferredStyle:UIAlertControllerStyleAlert];
@@ -280,13 +318,42 @@
         NSLog(@"自定义话题：");
         NSLog(@"%@",_textField.text);
         
-        AppDelegate *myDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-        myDelegate.topicIsChosed = YES;
-        [self.navigationController popViewControllerAnimated:YES];
-//        [self.navigationController setNavigationBarHidden:YES animated:NO];
-        [self dismissViewControllerAnimated:YES completion:^{
-            NSLog(@"回到匹配界面");
+        dispatch_group_t downloadGroup0 = dispatch_group_create();
+        dispatch_group_enter(downloadGroup0);
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        [manager POST:[NSString stringWithFormat:@"%@room/join", myDelegate.URL] parameters:nil headers:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+            // 直接以 key value 的形式向 formData 中追加二进制数据
+            [formData appendPartWithFormData:[myDelegate.userName dataUsingEncoding:NSUTF8StringEncoding]
+                                        name:@"username"];
+            for(int i = 0; i < self.selectedTopics.count; i++) {
+                [formData appendPartWithFormData:[self.selectedTopics[i] dataUsingEncoding:NSUTF8StringEncoding] name:@"topics"];
+            }
+            
+            [formData appendPartWithFormData:[self->_textField.text dataUsingEncoding:NSUTF8StringEncoding]
+                                        name:@"custom-topic"];
+
+        } progress:^(NSProgress * _Nonnull uploadProgress) {
+            //NSLog(@"ttt");
+        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            NSLog(@"success");
+            NSLog(@"%@", responseObject);
+            NSString * roomid = [responseObject objectForKey:@"roomid"];
+            myDelegate.roomID = (uint)[roomid intValue];
+            NSLog(@"roomid = %d", myDelegate.roomID);
+            dispatch_group_leave(downloadGroup0);
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            NSLog(@"fail");
+            NSLog(@"%@", error);
         }];
+        dispatch_group_notify(downloadGroup0, dispatch_get_main_queue(), ^{
+            AppDelegate *myDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+            myDelegate.topicIsChosed = YES;
+            [self.navigationController popViewControllerAnimated:YES];
+    //        [self.navigationController setNavigationBarHidden:YES animated:NO];
+            [self dismissViewControllerAnimated:YES completion:^{
+                NSLog(@"回到匹配界面");
+            }];
+        });
     }
 }
 
@@ -297,6 +364,29 @@
     [_selectedTopics removeAllObjects];
     [_selectIndexs removeAllObjects];
 }
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+    NSMutableString * newtxt = [NSMutableString stringWithString:self.textField.text];
+    [newtxt replaceCharactersInRange:range withString:string];
+    if (newtxt.length > 30) return NO;
+    return YES;
+}
+
+- (void)textFieldDidChange:(UITextField *)textField{
+    
+    UITextRange *selectedRange = [textField markedTextRange];
+    // 获取高亮部分
+    UITextPosition *pos = [textField positionFromPosition:selectedRange.start offset:0];
+    if (selectedRange && pos) {//如果存在高亮部分, 就暂时不统计字数
+        return;
+    }
+    NSInteger realLength = textField.text.length;
+    if (realLength > 20) {
+        textField.text = [textField.text substringToIndex:20];
+    }
+
+}
+
 
 /*
 // Override to support conditional editing of the table view.
