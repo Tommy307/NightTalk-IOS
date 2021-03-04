@@ -50,7 +50,7 @@ type Topic struct {
 - `Message`
 ``` go
 // Message 消息
-// 目前只有举报消息
+// 举报消息 & 被扣分的通知消息
 type Message struct {
 	ID          		uint
 	Sender	    		string
@@ -59,6 +59,7 @@ type Message struct {
 	Dirty	    		bool		// 是否处理，为 0 表示未处理（认同举报或拒绝举报）
 	Reported_User_ID	uint		// 被举报用户的 ID
 	Audios      		array		// 被举报用户的音频信息（至多20条音频）
+	Type			uint		// 为 0 表示举报消息，提供给后台管理系统，为 1 表示被扣分消息，提供给移动端
 }
 ```
 
@@ -104,6 +105,12 @@ type Message struct {
 - 获取头像
 
 `localhost:8000/picture/:picname GET`
+
+- 获取被扣分消息
+
+`localhost:8000/messages GET`
+
+返回 Message 库中所有 dirty == 0（未处理）&& type == 0 的消息 
 
 - 发送一段录音
 
@@ -184,7 +191,26 @@ type Message struct {
 
 `localhost:8000/messages_client GET`
 
-返回 Message 库中所有 dirty == 0（未处理） 的消息  
+返回 Message 库中所有 dirty == 0（未处理）&& type == 1 的消息 
+
+- 认可举报，对被举报用户进行扣分
+
+`localhost:8000/acceptReport_client POST`
+|参数| 类型 |
+|---|---|
+|username | string|			 // 扣分的用户账户名
+|reason   | string|			 // 客服输入的扣分原因
+|time | time|
+
+！注意，服务器收到认可举报的请求后，进行扣分，同时需要在 Message 库创建用户被扣分的消息：
+Message {
+	ID          		...
+	Sender	   		="admin"
+	Content     		=reason
+	Time	    		=time
+	Dirty	    		=0
+	Type			=1
+}
 
 - 获取常驻话题
 
@@ -207,8 +233,6 @@ type Message struct {
 |参数| 类型 |
 |---|---|
 |topic | string|
-
-删除常驻话题
 
 # 特色功能
 将用户自定义话题存储起来，对话题库中评分低的（用户每次选择就给话题加1分）予以替换。
