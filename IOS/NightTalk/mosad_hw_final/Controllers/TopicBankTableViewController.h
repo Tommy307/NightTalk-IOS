@@ -11,7 +11,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface TopicBankTableViewController : UITableViewController<UITextFieldDelegate>
-
+{
+    UIView * _view;
+}
 //多选选中的行
 @property (strong, nonatomic) NSMutableArray * selectIndexs;
 @property (nonatomic, retain) UITextField * textField;

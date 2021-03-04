@@ -28,15 +28,15 @@
     self.score = (uint)0;
 //    self.isLogin = true;
 //    self.userId = (uint)-1;           // 未登录 id 为 -1，正常的 id 从 1 开始
-//    self.userName = @"fg";
-//    self.password = @"fg";
+//    self.userName = @"11";
+//    self.password = @"11";
 //    self.userAvatar = [UIImage imageNamed:@"haimianbaobao.jpg"];
 //    self.score = (uint)100;
     
     self.topicIsChosed = NO;
     self.notificationIsOpen = NO;
     
-    self.roomID = (uint)19;
+    self.roomID = (uint)0;
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     [self.window makeKeyAndVisible];
@@ -44,11 +44,15 @@
     UINavigationController * nvc = [[UINavigationController alloc] initWithRootViewController:_matchViewController];
     [self.window setRootViewController:nvc];
     
+//    TalkingViewController * talkingViewController = [[TalkingViewController alloc] init];
+//    [self.window setRootViewController:talkingViewController];
+    
 //    self.matchViewController = [[TopicBankTableViewController alloc] init];
 //    UINavigationController * nvc = [[UINavigationController alloc] initWithRootViewController:_matchViewController];
 //    [self.window setRootViewController:nvc];
     
-    self.URL = @"http://192.168.0.120:8000/";
+//    self.URL = @"http://172.26.103.135:8081/";
+    self.URL = @"http://172.26.72.61:8000/";
 //添加启动动画
 //    self.adView = [[UIImageView alloc] initWithFrame:self.window.bounds];
 //    [self.window addSubview: self.adView ];
